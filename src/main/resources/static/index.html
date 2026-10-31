@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GestionRH — Tableau de bord RH</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+
+<div class="app">
+
+    <!-- ================= BARRE LATÉRALE ================= -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div class="brand-logo">RH</div>
+            <div>
+                <h1 id="brandName">GestionRH</h1>
+                <p>Ressources humaines</p>
+            </div>
+        </div>
+
+        <p class="nav-title">Menu principal</p>
+        <nav class="nav">
+            <a href="#" class="nav-link active" data-page="accueil"><span>📊</span> Tableau de bord</a>
+            <a href="#" class="nav-link" data-page="employes"><span>👥</span> Employés</a>
+            <a href="#" class="nav-link" data-page="departements"><span>🏢</span> Départements</a>
+            <a href="#" class="nav-link" data-page="postes"><span>💼</span> Postes</a>
+            <a href="#" class="nav-link" data-page="statistiques"><span>📈</span> Statistiques</a>
+            <a href="#" class="nav-link" data-page="powerbi"><span>📑</span> Rapport Power BI</a>
+            <a href="#" class="nav-link" data-page="parametres"><span>⚙️</span> Paramètres</a>
+        </nav>
+
+        <div class="sidebar-card">
+            <p>💡 Astuce</p>
+            <small>Ajoutez une photo à chaque employé depuis sa fiche pour personnaliser l'équipe.</small>
+        </div>
+
+        <a href="#" class="logout" id="logoutBtn">🚪 Déconnexion</a>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ================= CONTENU PRINCIPAL ================= -->
+    <main class="main">
+
+        <!-- En-tête -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn menu-toggle" id="menuToggle" type="button" aria-label="Ouvrir le menu">☰</button>
+                <div>
+                    <h2 id="pageTitle">Tableau de bord</h2>
+                    <p class="date" id="currentDate"></p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="search-box">
+                    <span>🔍</span>
+                    <input type="text" id="globalSearch" placeholder="Rechercher un employé (Entrée)">
+                </div>
+
+                <button class="icon-btn" id="themeToggle" type="button" title="Changer de thème">🌙</button>
+
+                <div class="notif-wrapper">
+                    <button class="icon-btn" id="notifBtn" type="button" title="Notifications">
+                        🔔<span class="badge" id="notifBadge" hidden>0</span>
+                    </button>
+                    <div class="dropdown" id="notifDropdown">
+                        <h4>Notifications</h4>
+                        <ul id="notifList"></ul>
+                    </div>
+                </div>
+
+                <div class="admin">
+                    <div class="avatar" id="adminAvatar">A</div>
+                    <div class="admin-info">
+                        <strong id="adminLabel">Administrateur</strong>
+                        <small>Responsable RH</small>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Bandeau mode démo -->
+        <div class="demo-banner" id="demoBanner" hidden>
+            <span>⚠️ <strong>Mode démonstration :</strong> le serveur Spring Boot ne répond pas. Les données affichées sont des exemples et ne sont pas enregistrées.</span>
+            <button class="btn btn-sm btn-outline" id="retryBtn" type="button">Réessayer</button>
+        </div>
+
+        <!-- ============ PAGE : TABLEAU DE BORD ============ -->
+        <section id="accueil" class="page active">
+
+            <div class="hero">
+                <div class="hero-text">
+                    <span class="hero-tag">👋 Bonjour, <span id="heroName">Administrateur</span></span>
+                    <h1>Bienvenue sur <span id="heroCompany">GestionRH</span></h1>
+                    <p>Pilotez vos équipes, vos départements et votre masse salariale en un coup d'œil.</p>
+                    <div class="hero-actions">
+                        <button class="btn btn-light" type="button" data-action="add-employe">+ Nouvel employé</button>
+                        <button class="btn btn-ghost" type="button" data-goto="powerbi">📑 Rapport Power BI</button>
+                    </div>
+                </div>
+
+                <svg class="hero-illu" viewBox="0 0 280 190" aria-hidden="true">
+                    <circle cx="220" cy="40" r="70" fill="rgba(255,255,255,.08)"/>
+                    <circle cx="40" cy="170" r="50" fill="rgba(255,255,255,.06)"/>
+                    <rect x="20" y="138" width="240" height="34" rx="17" fill="rgba(255,255,255,.14)"/>
+                    <circle cx="82" cy="78" r="18" fill="#FFD7C2"/>
+                    <path d="M54 140 q28 -48 56 0 z" fill="#F76C5E"/>
+                    <circle cx="140" cy="62" r="23" fill="#F1C7A6"/>
+                    <path d="M104 140 q36 -60 72 0 z" fill="#F5B841"/>
+                    <circle cx="198" cy="78" r="18" fill="#E8B48F"/>
+                    <path d="M170 140 q28 -48 56 0 z" fill="#5EEAD4"/>
+                    <rect x="200" y="8" width="66" height="46" rx="10" fill="#ffffff"/>
+                    <rect x="210" y="34" width="8" height="12" rx="2" fill="#0E7C7B"/>
+                    <rect x="222" y="26" width="8" height="20" rx="2" fill="#F5B841"/>
+                    <rect x="234" y="18" width="8" height="28" rx="2" fill="#F76C5E"/>
+                    <rect x="246" y="30" width="8" height="16" rx="2" fill="#5EEAD4"/>
+                </svg>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi" style="--c:#0E7C7B" data-goto="employes">
+                    <div class="kpi-icon">👥</div>
+                    <div><small>Employés</small><strong id="kpiEmployes">0</strong></div>
+                </div>
+                <div class="kpi" style="--c:#F76C5E" data-goto="departements">
+                    <div class="kpi-icon">🏢</div>
+                    <div><small>Départements</small><strong id="kpiDepartements">0</strong></div>
+                </div>
+                <div class="kpi" style="--c:#6366F1" data-goto="postes">
+                    <div class="kpi-icon">💼</div>
+                    <div><small>Postes</small><strong id="kpiPostes">0</strong></div>
+                </div>
+                <div class="kpi" style="--c:#F5B841" data-goto="statistiques">
+                    <div class="kpi-icon">💰</div>
+                    <div><small>Masse salariale / mois</small><strong id="kpiMasse">0 DT</strong></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-head">
+                        <h3>Employés par département</h3>
+                        <span class="chip">En direct</span>
+                    </div>
+                    <div class="chart-box"><canvas id="chartDept"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head">
+                        <h3>Répartition par poste</h3>
+                        <span class="chip">En direct</span>
+                    </div>
+                    <div class="chart-box"><canvas id="chartPoste"></canvas></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-head">
+                        <h3>Derniers employés</h3>
+                        <button class="link-btn" type="button" data-goto="employes">Voir tout →</button>
+                    </div>
+                    <ul class="people-list" id="recentList"></ul>
+                </div>
+                <div class="card">
+                    <div class="card-head">
+                        <h3>Masse salariale par département</h3>
+                    </div>
+                    <div class="chart-box"><canvas id="chartMasse"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE : EMPLOYÉS ============ -->
+        <section id="employes" class="page">
+            <div class="toolbar">
+                <div class="search-box grow">
+                    <span>🔍</span>
+                    <input type="text" id="employeeSearch" placeholder="Nom, email, poste, département...">
+                </div>
+                <select id="deptFilter" class="input select-filter">
+                    <option value="">Tous les départements</option>
+                </select>
+                <button class="btn btn-outline" id="exportBtn" type="button">⬇️ Exporter CSV</button>
+                <button class="btn btn-primary" type="button" data-action="add-employe">+ Ajouter un employé</button>
+            </div>
+
+            <div class="card no-pad">
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Employé</th>
+                                <th>Email</th>
+                                <th>Poste</th>
+                                <th>Département</th>
+                                <th>Salaire</th>
+                                <th class="right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <p class="table-info" id="tableInfo"></p>
+        </section>
+
+        <!-- ============ PAGE : DÉPARTEMENTS ============ -->
+        <section id="departements" class="page">
+            <div class="toolbar">
+                <p class="muted">Organisez votre entreprise par départements.</p>
+                <button class="btn btn-primary" type="button" data-action="add-departement">+ Ajouter un département</button>
+            </div>
+            <div class="dept-grid" id="departmentContainer"></div>
+        </section>
+
+        <!-- ============ PAGE : POSTES ============ -->
+        <section id="postes" class="page">
+            <div class="toolbar">
+                <p class="muted">Définissez les postes et leur fourchette de salaire.</p>
+                <button class="btn btn-primary" type="button" data-action="add-poste">+ Ajouter un poste</button>
+            </div>
+
+            <div class="card no-pad">
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Intitulé</th>
+                                <th>Description</th>
+                                <th>Fourchette de salaire</th>
+                                <th>Employés</th>
+                                <th class="right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="postesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE : STATISTIQUES ============ -->
+        <section id="statistiques" class="page">
+            <div class="kpi-grid">
+                <div class="kpi" style="--c:#0E7C7B">
+                    <div class="kpi-icon">📊</div>
+                    <div><small>Salaire moyen</small><strong id="statMoyen">0 DT</strong></div>
+                </div>
+                <div class="kpi" style="--c:#22C55E">
+                    <div class="kpi-icon">⬇️</div>
+                    <div><small>Salaire minimum</small><strong id="statMin">0 DT</strong></div>
+                </div>
+                <div class="kpi" style="--c:#F76C5E">
+                    <div class="kpi-icon">⬆️</div>
+                    <div><small>Salaire maximum</small><strong id="statMax">0 DT</strong></div>
+                </div>
+                <div class="kpi" style="--c:#F5B841" data-goto="employes">
+                    <div class="kpi-icon">❓</div>
+                    <div><small>Sans département</small><strong id="statSansDept">0</strong></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-head"><h3>Salaire moyen par poste</h3></div>
+                    <div class="chart-box"><canvas id="chartSalairePoste"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><h3>Répartition par tranche de salaire</h3></div>
+                    <div class="chart-box"><canvas id="chartTranches"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ PAGE : POWER BI ============ -->
+        <section id="powerbi" class="page">
+            <div class="card">
+                <div class="pbi-head">
+                    <div class="pbi-logo"><span></span><span></span><span></span></div>
+                    <div>
+                        <h3>Rapport Power BI</h3>
+                        <p class="muted">Collez le lien de votre rapport Power BI publié pour l'afficher directement ici.</p>
+                    </div>
+                </div>
+
+                <form class="pbi-form" id="pbiForm">
+                    <input type="url" id="pbiUrl" class="input" placeholder="https://app.powerbi.com/view?r=...">
+                    <button class="btn btn-pbi" type="submit">Afficher le rapport</button>
+                    <button class="btn btn-outline" type="button" id="pbiClear">Retirer</button>
+                </form>
+            </div>
+
+            <div class="card no-pad pbi-frame-card" id="pbiFrameCard" hidden>
+                <iframe id="pbiFrame" title="Rapport Power BI" allowfullscreen></iframe>
+            </div>
+
+            <div class="card">
+                <h3>Comment créer et intégrer le rapport ?</h3>
+                <ol class="steps">
+                    <li><strong>Récupérer les données :</strong> exportez les employés en CSV avec le bouton ci-dessous, ou connectez Power BI Desktop directement à MySQL (base <code>gestion_rh</code>).</li>
+                    <li><strong>Créer les visuels</strong> dans Power BI Desktop : nombre d'employés par département, masse salariale, salaire moyen par poste…</li>
+                    <li><strong>Publier</strong> le rapport sur Power BI Service (bouton <em>Publier</em>).</li>
+                    <li>Dans le rapport en ligne : <em>Fichier → Incorporer le rapport → Publier sur le web</em>, puis copiez le lien.</li>
+                    <li><strong>Collez le lien</strong> dans le champ ci-dessus et cliquez sur « Afficher le rapport ».</li>
+                </ol>
+                <button class="btn btn-primary" type="button" id="pbiExport">⬇️ Exporter les employés (CSV) pour Power BI</button>
+            </div>
+        </section>
+
+        <!-- ============ PAGE : PARAMÈTRES ============ -->
+        <section id="parametres" class="page">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Profil & entreprise</h3>
+                    <form id="settingsForm" class="form">
+                        <div class="field">
+                            <label for="companyName">Nom de l'entreprise</label>
+                            <input type="text" id="companyName" class="input" required>
+                        </div>
+                        <div class="field">
+                            <label for="adminName">Nom de l'administrateur</label>
+                            <input type="text" id="adminName" class="input" required>
+                        </div>
+                        <div class="field">
+                            <label for="adminEmail">Adresse email</label>
+                            <input type="email" id="adminEmail" class="input" placeholder="admin@entreprise.com">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Apparence</h3>
+                    <div class="setting-row">
+                        <div>
+                            <strong>Mode sombre</strong>
+                            <small class="muted">Plus confortable le soir.</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="darkSwitch">
+                            <span></span>
+                        </label>
+                    </div>
+
+                    <h3 class="mt">Données locales</h3>
+                    <p class="muted">Les photos des employés sont enregistrées dans ce navigateur.</p>
+                    <button class="btn btn-danger-outline" type="button" id="clearPhotosBtn">🗑️ Supprimer toutes les photos</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ================= FENÊTRE : EMPLOYÉ ================= -->
+<div class="modal" id="employeeModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="employeeModalTitle">Ajouter un employé</h3>
+            <button class="icon-btn sm" type="button" data-close>✕</button>
+        </div>
+
+        <form id="employeeForm" class="form">
+            <input type="hidden" id="employeeId">
+
+            <div class="photo-picker">
+                <div class="avatar avatar-xl" id="photoPreview">📷</div>
+                <div class="photo-actions">
+                    <label class="btn btn-outline btn-sm" for="photoInput">📷 Choisir une photo</label>
+                    <input type="file" id="photoInput" accept="image/*" hidden>
+                    <button type="button" class="link-btn" id="removePhotoBtn">Retirer la photo</button>
+                    <small class="muted">JPG ou PNG — enregistrée dans le navigateur</small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" class="input" required>
+                </div>
+                <div class="field">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" id="prenom" class="input" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="input" required>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label for="posteSelect">Poste</label>
+                    <select id="posteSelect" class="input"></select>
+                </div>
+                <div class="field">
+                    <label for="departementSelect">Département</label>
+                    <select id="departementSelect" class="input" required></select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="salaire">Salaire mensuel (DT)</label>
+                <input type="number" id="salaire" class="input" min="0" step="0.01" required>
+                <small class="hint" id="salaireHint"></small>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" data-close>Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= FENÊTRE : DÉPARTEMENT ================= -->
+<div class="modal" id="departementModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="deptModalTitle">Ajouter un département</h3>
+            <button class="icon-btn sm" type="button" data-close>✕</button>
+        </div>
+        <form id="departementForm" class="form">
+            <input type="hidden" id="deptId">
+            <div class="field">
+                <label for="deptNom">Nom du département</label>
+                <input type="text" id="deptNom" class="input" required>
+            </div>
+            <div class="field">
+                <label for="deptDescription">Description</label>
+                <textarea id="deptDescription" class="input" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" data-close>Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= FENÊTRE : POSTE ================= -->
+<div class="modal" id="posteModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="posteModalTitle">Ajouter un poste</h3>
+            <button class="icon-btn sm" type="button" data-close>✕</button>
+        </div>
+        <form id="posteForm" class="form">
+            <input type="hidden" id="posteId">
+            <div class="field">
+                <label for="posteIntitule">Intitulé du poste</label>
+                <input type="text" id="posteIntitule" class="input" required>
+            </div>
+            <div class="field">
+                <label for="posteDescription">Description</label>
+                <textarea id="posteDescription" class="input" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="field">
+                    <label for="posteMin">Salaire minimum (DT)</label>
+                    <input type="number" id="posteMin" class="input" min="0" step="0.01">
+                </div>
+                <div class="field">
+                    <label for="posteMax">Salaire maximum (DT)</label>
+                    <input type="number" id="posteMax" class="input" min="0" step="0.01">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" data-close>Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= FENÊTRE : CONFIRMATION ================= -->
+<div class="modal" id="confirmModal">
+    <div class="modal-box modal-sm center">
+        <div class="confirm-icon">⚠️</div>
+        <h3 id="confirmTitle">Confirmer</h3>
+        <p class="muted" id="confirmText"></p>
+        <div class="modal-actions center">
+            <button type="button" class="btn btn-outline" data-close>Annuler</button>
+            <button type="button" class="btn btn-danger" id="confirmOk">Supprimer</button>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+</body>
+</html>

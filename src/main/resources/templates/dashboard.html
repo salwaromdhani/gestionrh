@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion RH | Tableau de bord</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <i class="fa-solid fa-users"></i>
+            <h2>Gestion RH</h2>
+            <p>Manager vos talents</p>
+        </div>
+
+        <nav>
+            <a href="/" class="active">
+                <i class="fa-solid fa-house"></i>
+                Tableau de bord
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-user-group"></i>
+                Employés
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-building"></i>
+                Départements
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-briefcase"></i>
+                Postes
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-file-contract"></i>
+                Contrats
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-calendar-check"></i>
+                Congés
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-graduation-cap"></i>
+                Formations
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-chart-pie"></i>
+                Rapports
+            </a>
+        </nav>
+
+        <div class="logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Déconnexion
+        </div>
+
+    </aside>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <input type="search" placeholder="Rechercher un employé...">
+
+            <div class="profile">
+                <i class="fa-solid fa-bell"></i>
+                <span>Administrateur RH</span>
+                <i class="fa-solid fa-circle-user"></i>
+            </div>
+        </header>
+
+        <!-- BANNIERE -->
+        <section class="welcome">
+            <div>
+                <h1>Bienvenue dans votre espace RH</h1>
+                <p>Une gestion humaine, une entreprise plus forte !</p>
+            </div>
+            <i class="fa-solid fa-people-group"></i>
+        </section>
+
+        <!-- STATISTIQUES -->
+        <section class="stats">
+
+            <div class="stat-card navy">
+                <i class="fa-solid fa-users"></i>
+                <div>
+                    <p>Employés</p>
+                    <h2>120</h2>
+                </div>
+            </div>
+
+            <div class="stat-card gold">
+                <i class="fa-solid fa-building"></i>
+                <div>
+                    <p>Départements</p>
+                    <h2>5</h2>
+                </div>
+            </div>
+
+            <div class="stat-card navy">
+                <i class="fa-solid fa-file-contract"></i>
+                <div>
+                    <p>Contrats actifs</p>
+                    <h2>98</h2>
+                </div>
+            </div>
+
+            <div class="stat-card gold">
+                <i class="fa-solid fa-calendar-days"></i>
+                <div>
+                    <p>Congés en cours</p>
+                    <h2>18</h2>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- CONTENU INFERIEUR -->
+        <section class="content-grid">
+
+            <div class="panel">
+                <h3> <i class="fa-solid fa-chart-column"></i>
+                    Activité RH
+                </h3>
+
+                <div class="activity">
+                    <div>
+                        <span class="dot blue"></span>
+                        Employés enregistrés
+                        <strong>120</strong>
+                    </div>
+
+                    <div>
+                        <span class="dot orange"></span>
+                        Contrats actifs
+                        <strong>98</strong>
+                    </div>
+
+                    <div>
+                        <span class="dot green"></span>
+                        Formations planifiées
+                        <strong>12</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>
+                    <i class="fa-solid fa-bolt"></i>
+                    Actions rapides
+                </h3>
+
+                <a href="#" class="action-button">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Ajouter un employé
+                </a>
+
+                <a href="#" class="action-button gold-button">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Gérer les congés
+                </a>
+
+                <a href="#" class="action-button">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    Ajouter une formation
+                </a>
+            </div>
+
+        </section>
+
+        <footer>
+            © 2026 Gestion RH - Tous droits réservés.
+        </footer>
+
+    </main>
+</div>
+
+</body>
+</html>
